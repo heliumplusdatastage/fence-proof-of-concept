@@ -1,0 +1,27 @@
+version: "3.1"
+services:
+  db:
+    image: postgres
+    restart: always
+    environment:
+      POSTGRES_PASSWORD: testpw
+    ports:
+      - "15432:5432"
+
+  fence:
+    build:
+      context: "./fence"
+      dockerfile: Dockerfile
+    #ports:
+    #  - "5432:15432"
+    links:
+      - db:database
+    command: tail -F /dev/null
+    tty: true
+    environment:
+      PGPASSWORD: testpw
+
+  gen3-worker:
+    build:
+      context: "./gen3-worker"
+      dockerfile: Dockerfile
