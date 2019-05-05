@@ -1,4 +1,4 @@
-version: "3.1"
+version: "3.7"
 services:
   db:
     image: postgres
@@ -7,19 +7,29 @@ services:
       POSTGRES_PASSWORD: testpw
     ports:
       - "15432:5432"
+    expose:
+      - "15432"
+    healthcheck:
+        test: ["CMD", "curl", "-f", "localhost:5432"]
+        interval: 10s
+        timeout: 5s
+        retries: 5
 
   fence:
     build:
       context: "./fence"
       dockerfile: Dockerfile
-    #ports:
-    #  - "5432:15432"
+    ports:
+      - "5432:15432"
     links:
       - db:database
     command: tail -F /dev/null
     tty: true
     environment:
+      # must be same as POSTGRES_PASSWORD in db
       PGPASSWORD: testpw
+    depends_on:
+      - db
 
   gen3-worker:
     build:
