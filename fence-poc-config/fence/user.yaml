@@ -1,0 +1,8 @@
+cloud_providers: {}
+groups: {}
+users:
+  <***user@domain***>:
+    projects:
+    - auth_id: project_b
+      privilege: [read-storage]
+

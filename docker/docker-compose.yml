@@ -1,37 +1,96 @@
+##
+# SETUP REQUIREMENTS
+#
+# (1) copy docker-compose-env-file-example to .env file in docker-compose.yml dir and fill out properties. (This is necessary because docker-compose does not accept a config file arg - only a file called .env in the docker-compose.yaml dir.)
+#
+# (2) copy the ../fence-poc-config/ directory out of the git repo, customize the files in it, and set <.env file>: FENCE_CONFIG_DIR, etc. to reflect its location. (Relevant files from this dir will be bind-mounted on the container(s). (This mechanism is used instead of https://docs.docker.com/v17.09/engine/swarm/configs/ or "secrets" because the config values are either used at build time (e.g., fence-db password) or must be on the container in a specific location (e.g., fence-config.yaml).)
+#
+# to clean use: docker system prune -a -f; docker volume prune -f
+#
 version: "3.7"
+
 services:
-  db:
-    image: postgres
-    restart: always
+
+  fence-db:
+    build:
+      context: "./fence-db"
+      dockerfile: Dockerfile
     environment:
-      POSTGRES_PASSWORD: testpw
-    ports:
-      - "15432:5432"
-    expose:
-      - "15432"
+      - POSTGRES_PASSWORD
+      - POSTGRES_USER
+      - POSTGRES_DB
+      - FENCEDB_TABLESPACE_DIR
+    restart: always
     healthcheck:
         test: ["CMD", "curl", "-f", "localhost:5432"]
         interval: 10s
         timeout: 5s
         retries: 5
+    networks:
+      - backend-net
 
   fence:
-    build:
-      context: "./fence"
-      dockerfile: Dockerfile
-    ports:
-      - "5432:15432"
-    links:
-      - db:database
-    command: tail -F /dev/null
-    tty: true
+    build: https://github.com/uc-cdis/fence.git#${FENCE_RELEASE_VERSION}
     environment:
-      # must be same as POSTGRES_PASSWORD in db
-      PGPASSWORD: testpw
+      - GEN3_DEBUG
+    ports:
+      - "80:80"
     depends_on:
-      - db
+      - fence-db
+      - indexd-stub
+    volumes:
+      - type: bind
+        source: ${FENCE_CONFIG_DIR}/fence-config.yaml 
+        target: /var/www/fence/fence-config.yaml
+      - type: bind
+        source: ${FENCE_CONFIG_DIR}/jwt-keys.tar
+        target: /fence/jwt-keys.tar
+      - type: bind
+        source: ${FENCE_CONFIG_DIR}/uswgi.conf
+        target: /etc/nginx/sites-available/uwsgi.conf
+      - type: bind
+        source: ${FENCE_CONFIG_DIR}/dockerrun.bash
+        target: /fence/dockerrun.bash
+      - type: bind
+        source: ${FENCE_CONFIG_DIR}/user.yaml
+        target: /fence/user.yaml
+    networks:
+      backend-net:
 
-  gen3-worker:
+  wts-stub:
     build:
-      context: "./gen3-worker"
+      context: "./wts-stub"
       dockerfile: Dockerfile
+    environment:
+      - COMMONS_URI
+      - API_KEY
+    depends_on:
+      - fence
+    networks:
+      - backend-net
+
+  indexd-stub:
+    build:
+      context: "./indexd-stub"
+      dockerfile: Dockerfile
+    networks:
+      - backend-net
+
+  worker:
+    build:
+      context: "./worker"
+      dockerfile: Dockerfile
+    environment:
+      - FENCE_HOST
+      - WTS_URL
+    privileged: true
+    depends_on:
+      - fence
+      - wts-stub
+    networks:
+      - backend-net
+#      - external-net
+
+networks:
+  backend-net:
+

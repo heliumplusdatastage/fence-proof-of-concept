@@ -1,0 +1,29 @@
+  {
+    "did": "fbd5b74e-6789-4f42-b88f-f75e72777f5d",
+    "baseid": "string",
+    "rev": "string",
+    "form": "object",
+    "size": 100,
+    "file_name": "testfile",
+    "version": "string",
+    "uploader": "",
+    "rbac": "string",
+    "urls": [
+      "gs://dev-helx-auth-data-bucket/testfile.txt"
+    ],
+    "acl": [
+      "project_b"
+    ],
+    "hashes": {
+      "md5": "string",
+      "sha": "string",
+      "sha256": "string",
+      "sha512": "string",
+      "crc": "string",
+      "etag": "string"
+    },
+    "updated_date": "2019-04-25T18:58:05.944Z",
+    "created_date": "2019-04-25T18:58:05.944Z",
+    "metadata": {},
+    "urls_metadata": {}
+  }
