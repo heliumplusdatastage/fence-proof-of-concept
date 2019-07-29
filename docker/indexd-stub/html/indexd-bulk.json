@@ -10,7 +10,7 @@
     "uploader": "",
     "rbac": "string",
     "urls": [
-      "gs://dev-helx-auth-data-bucket/testfile.txt"
+      "gs://dev-helx-auth-data-bucket2/testfile.txt"
     ],
     "acl": [
       "project_b"

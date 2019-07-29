@@ -25,3 +25,7 @@ sed -i "s/access.log  json/access.log main/g" /etc/nginx/nginx.conf
 ## initialzation shim to set up fence for testing
 fence-create client-create --client fence-test-client0 --urls http://<***FQHN of fence endpoint***>/ --username a-user-responsible-for-this-oauth-client
 fence-create sync --yaml /fence/user.yaml
+
+## create a storage bucket linked to the DBGAP user/project authZ defined in user.yaml
+## --public False causes fence-create to create read GBAG and write GBAB
+fence-create google-bucket-create --unique-name dev-helx-auth-data-bucket2 --public False --project-auth-id project_b
