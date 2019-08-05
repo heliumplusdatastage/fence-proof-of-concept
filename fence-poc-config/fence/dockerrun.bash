@@ -22,7 +22,7 @@ fi
 ## nginx shim to use standard weblog format that includes remote_addr
 sed -i "s/access.log  json/access.log main/g" /etc/nginx/nginx.conf
 
-## initialzation shim to set up fence for testing
+## initialization shim to set up fence for testing
 fence-create client-create --client fence-test-client0 --urls http://<***FQHN of fence endpoint***>/ --username a-user-responsible-for-this-oauth-client
 fence-create sync --yaml /fence/user.yaml
 

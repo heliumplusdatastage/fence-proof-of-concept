@@ -60,7 +60,7 @@ MOCK_AUTH: false
 MOCK_GOOGLE_AUTH: false
 DEV_LOGIN_COOKIE_NAME: "dev_login"
 # if true, will ignore anything configured in STORAGE_CREDENTIALS
-MOCK_STORAGE: true
+MOCK_STORAGE: false
 # allow OIDC traffic on http for development. By default it requires https.
 #
 # WARNING: ONLY set to true when fence will be deployed in such a way that it will
@@ -380,13 +380,13 @@ dbGaP:
 # //////////////////////////////////////////////////////////////////////////////////////
 # Configuration for various storage systems for the backend
 # NOTE: Remove the [] and supply backends if needed. Example in comments below
-STORAGE_CREDENTIALS: []
+STORAGE_CREDENTIALS: 
 # Google Cloud Storage backend
 #
-#  'google':
-#    backend: 'google'
-#    # this should be the project id where the Google Groups for data access are managed
-#    google_project_id: 'some-project-id-12378923'
+  'google':
+     backend: 'google'
+     # this should be the project id where the Google Groups for data access are managed
+     google_project_id: '***'
 
 # Cleversafe data storage backend
 #

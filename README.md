@@ -6,11 +6,11 @@ NB: For a standalone deployment (e.g., using docker-compose) don't leave contain
 
 ## Setup (for using docker-compose)
 
-Use Docker Community Edition (CE) 19.03.0-rc3 and docker-compose 1.24.1 (or later)
+Use Docker Community Edition (CE) 19.03.0-rc3 and docker-compose 1.24.1 (or later).
 
-See SETUP REQUIREMENTS at top of docker-compose.yml
+See SETUP REQUIREMENTS at top of docker-compose.yml.
 
-Go to GCP and put a file testfile.txt (with some content in it) into the dev-helx-auth-data-bucket2 bucket.  
+Go to GCP and put a file testfile.txt (with some content in it) into the dev-helx-auth-data-bucket2 bucket. 
 
 ### Generate an API key for a user 
 
@@ -38,19 +38,12 @@ In the .env file set API_KEY (under wts-stub service) to the API key from the st
 ```
 $ docker-compose up worker
 ```
-Fails first time through with 'This backend is not supported by the system!' for some reason.
-
-Manually add created "user proxy group" to read gbag at https://admin.google.com/ac/groups. This is a workaround for now but should not be necessary.
-
-Launch again:
-```
-$ docker-compose up worker
-```
-
 The contents of the test file should be displayed.
 
 ## References
 
 Fence: https://github.com/uc-cdis/fence
+
 Gen3 FUSE: https://github.com/uc-cdis/gen3-fuse
+
 Workspace Token Service: https://github.com/uc-cdis/workspace-token-service
